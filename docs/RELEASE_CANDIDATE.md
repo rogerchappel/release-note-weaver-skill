@@ -9,10 +9,10 @@
 
 ## Verification
 
-- npm test
-- npm run check
-- npm run smoke
+- `npm test` - passed, 3 tests.
+- `npm run check` - passed, package metadata ok.
+- `npm run smoke` - passed, generated evidence-backed notes from fixture data with no missing-evidence warnings.
 
 ## Classification
 
-Ship after verification passes and the release-candidate PR is opened.
+Ship.
