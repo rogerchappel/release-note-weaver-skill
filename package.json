@@ -1,0 +1,31 @@
+{
+  "name": "release-note-weaver-skill",
+  "version": "0.1.0",
+  "description": "Generate evidence-backed release-candidate notes from local repo artifacts.",
+  "type": "module",
+  "bin": {
+    "release-note-weaver": "bin/release-note-weaver.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check-package.js",
+    "smoke": "node bin/release-note-weaver.js fixtures/sample-repo --no-git"
+  },
+  "keywords": [
+    "agent-skill",
+    "release-notes",
+    "evidence",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "docs",
+    "lib",
+    "SKILL.md",
+    "README.md"
+  ]
+}
