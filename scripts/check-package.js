@@ -7,6 +7,11 @@ assert.equal(packageJson.type, 'module');
 assert.ok(packageJson.bin['release-note-weaver']);
 assert.ok(packageJson.scripts.test);
 assert.ok(packageJson.scripts.smoke);
+assert.ok(packageJson.scripts['package:smoke']);
+assert.ok(packageJson.scripts['release:check']);
 assert.ok(packageJson.files.includes('SKILL.md'));
+assert.ok(packageJson.files.includes('fixtures'));
+assert.ok(packageJson.files.includes('LICENSE'));
+assert.ok(packageJson.files.includes('SECURITY.md'));
 
 console.log('package metadata ok');

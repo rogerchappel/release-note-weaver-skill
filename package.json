@@ -9,7 +9,9 @@
   "scripts": {
     "test": "node --test",
     "check": "node scripts/check-package.js",
-    "smoke": "node bin/release-note-weaver.js fixtures/sample-repo --no-git"
+    "smoke": "node bin/release-note-weaver.js fixtures/sample-repo --no-git",
+    "package:smoke": "npm pack --dry-run",
+    "release:check": "npm run check && npm test && npm run smoke && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
@@ -24,9 +26,12 @@
   "files": [
     "bin",
     "docs",
+    "fixtures",
     "lib",
     "SKILL.md",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "SECURITY.md"
   ],
   "repository": {
     "type": "git",
