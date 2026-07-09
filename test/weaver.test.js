@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import { collectEvidence, weaveReleaseNote } from '../lib/weaver.js';
 
@@ -23,4 +24,13 @@ test('renders warnings when evidence is missing', () => {
   const result = weaveReleaseNote('fixtures/empty-repo', { includeGit: false });
   assert.ok(result.warnings.includes('Missing completed task evidence in docs/TASKS.md.'));
   assert.match(result.markdown, /Warnings/);
+});
+
+test('cli exposes help and version metadata', () => {
+  const cwd = new URL('..', import.meta.url);
+  const help = execFileSync('node', ['bin/release-note-weaver.js', '--help'], { cwd, encoding: 'utf8' });
+  assert.match(help, /release-note-weaver \[repo\]/u);
+
+  const version = execFileSync('node', ['bin/release-note-weaver.js', '--version'], { cwd, encoding: 'utf8' });
+  assert.equal(version, '0.1.0\n');
 });

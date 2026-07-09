@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
 import { weaveReleaseNote } from '../lib/weaver.js';
 
 function parseArgs(argv) {
@@ -9,6 +10,8 @@ function parseArgs(argv) {
       args.includeGit = false;
     } else if (arg === '--help' || arg === '-h') {
       args.help = true;
+    } else if (arg === '--version') {
+      args.version = true;
     } else {
       args.repoPath = arg;
     }
@@ -22,6 +25,12 @@ if (args.help) {
   console.log(`Usage: release-note-weaver [repo] [--no-git]
 
 Generates a Markdown release-candidate note from local evidence.`);
+  process.exit(0);
+}
+
+if (args.version) {
+  const packageJson = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  console.log(packageJson.version);
   process.exit(0);
 }
 

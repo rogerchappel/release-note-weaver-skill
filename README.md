@@ -7,9 +7,11 @@ The CLI reads completed tasks, verification logs, optional recent commits, and o
 ## Quickstart
 
 ```bash
+npm install
 npm test
 npm run check
 npm run smoke
+npm run release:check
 node bin/release-note-weaver.js . --no-git
 ```
 
@@ -18,6 +20,8 @@ node bin/release-note-weaver.js . --no-git
 ```bash
 release-note-weaver <repo>
 release-note-weaver <repo> --no-git
+release-note-weaver --help
+release-note-weaver --version
 ```
 
 The command exits `0` when no missing-evidence warnings are produced and `1` when warnings are present.
@@ -40,3 +44,9 @@ The command exits `0` when no missing-evidence warnings are produced and `1` whe
 - Task parsing expects Markdown checklist syntax.
 - Verification parsing only recognizes common command prefixes.
 - Generated text is a draft and should be reviewed before use in a public PR.
+
+## Verify
+
+```bash
+npm run release:check
+```
