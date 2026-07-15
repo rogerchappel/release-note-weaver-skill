@@ -20,11 +20,5 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run package checks
-        run: npm run check
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run CLI smoke
-        run: npm run smoke
+      - name: Run release checks
+        run: npm run release:check
