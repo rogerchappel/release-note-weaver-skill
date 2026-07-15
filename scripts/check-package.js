@@ -13,5 +13,7 @@ assert.ok(packageJson.files.includes('SKILL.md'));
 assert.ok(packageJson.files.includes('fixtures'));
 assert.ok(packageJson.files.includes('LICENSE'));
 assert.ok(packageJson.files.includes('SECURITY.md'));
+assert.ok(packageJson.files.includes('CHANGELOG.md'));
+assert.ok(packageJson.files.includes('CONTRIBUTING.md'));
 
 console.log('package metadata ok');
