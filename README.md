@@ -20,11 +20,17 @@ node bin/release-note-weaver.js . --no-git
 ```bash
 release-note-weaver <repo>
 release-note-weaver <repo> --no-git
+release-note-weaver --no-git <repo>
 release-note-weaver --help
 release-note-weaver --version
 ```
 
-The command exits `0` when no missing-evidence warnings are produced and `1` when warnings are present.
+The repository operand is optional and defaults to the current directory. Supported flags
+may appear before or after it. Unknown options and extra repository operands print usage
+information and exit `2` without generating a note.
+
+The command exits `0` when no missing-evidence warnings are produced and `1` when warnings
+are present.
 
 ## Evidence Sources
 
