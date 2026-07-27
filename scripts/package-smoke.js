@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -31,6 +31,11 @@ if (!help.includes('Usage: release-note-weaver')) {
 const version = execFileSync('node', ['bin/release-note-weaver.js', '--version'], { encoding: 'utf8' }).trim();
 if (version !== pkg.version) {
   throw new Error(`CLI version ${version} does not match package version ${pkg.version}`);
+}
+
+const invalid = spawnSync('node', ['bin/release-note-weaver.js', '--unknown'], { encoding: 'utf8' });
+if (invalid.status !== 2 || invalid.stdout !== '' || !invalid.stderr.includes('Unknown option: --unknown')) {
+  throw new Error('CLI does not reject unknown options with a usage error');
 }
 
 console.log(`package smoke passed for ${pkg.name} with ${files.size} packed files`);
