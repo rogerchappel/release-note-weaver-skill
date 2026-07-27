@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { collectEvidence, weaveReleaseNote } from '../lib/weaver.js';
 
@@ -33,4 +33,49 @@ test('cli exposes help and version metadata', () => {
 
   const version = execFileSync('node', ['bin/release-note-weaver.js', '--version'], { cwd, encoding: 'utf8' });
   assert.equal(version, '0.1.0\n');
+});
+
+test('cli rejects unknown options without generating a release note', () => {
+  const cwd = new URL('..', import.meta.url);
+  const result = spawnSync('node', ['bin/release-note-weaver.js', '--bogus'], {
+    cwd,
+    encoding: 'utf8'
+  });
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, '');
+  assert.match(result.stderr, /Unknown option: --bogus/u);
+  assert.match(result.stderr, /Usage: release-note-weaver/u);
+  assert.doesNotMatch(result.stderr, /Release Candidate Note/u);
+});
+
+test('cli rejects more than one repository operand', () => {
+  const cwd = new URL('..', import.meta.url);
+  const result = spawnSync(
+    'node',
+    ['bin/release-note-weaver.js', 'fixtures/sample-repo', 'fixtures/empty-repo', '--no-git'],
+    { cwd, encoding: 'utf8' }
+  );
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, '');
+  assert.match(result.stderr, /Unexpected repository operand: fixtures\/empty-repo/u);
+  assert.match(result.stderr, /Usage: release-note-weaver/u);
+});
+
+test('cli accepts supported flags before or after the repository operand', () => {
+  const cwd = new URL('..', import.meta.url);
+  const before = execFileSync(
+    'node',
+    ['bin/release-note-weaver.js', '--no-git', 'fixtures/sample-repo'],
+    { cwd, encoding: 'utf8' }
+  );
+  const after = execFileSync(
+    'node',
+    ['bin/release-note-weaver.js', 'fixtures/sample-repo', '--no-git'],
+    { cwd, encoding: 'utf8' }
+  );
+
+  assert.equal(before, after);
+  assert.match(before, /Release Candidate Note/u);
 });
