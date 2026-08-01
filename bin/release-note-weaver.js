@@ -49,6 +49,12 @@ if (args.version) {
   process.exit(0);
 }
 
-const result = weaveReleaseNote(args.repoPath, { includeGit: args.includeGit });
+let result;
+try {
+  result = weaveReleaseNote(args.repoPath, { includeGit: args.includeGit });
+} catch (error) {
+  console.error(`Error: ${error.message}\n\n${usage}`);
+  process.exit(2);
+}
 console.log(result.markdown);
 process.exit(result.warnings.length === 0 ? 0 : 1);

@@ -26,6 +26,17 @@ test('renders warnings when evidence is missing', () => {
   assert.match(result.markdown, /Warnings/);
 });
 
+test('library rejects nonexistent and non-directory repository paths', () => {
+  assert.throws(
+    () => collectEvidence('fixtures/does-not-exist', { includeGit: false }),
+    /Repository path does not exist:/u
+  );
+  assert.throws(
+    () => collectEvidence('package.json', { includeGit: false }),
+    /Repository path is not a directory:/u
+  );
+});
+
 test('cli exposes help and version metadata', () => {
   const cwd = new URL('..', import.meta.url);
   const help = execFileSync('node', ['bin/release-note-weaver.js', '--help'], { cwd, encoding: 'utf8' });
@@ -61,6 +72,26 @@ test('cli rejects more than one repository operand', () => {
   assert.equal(result.stdout, '');
   assert.match(result.stderr, /Unexpected repository operand: fixtures\/empty-repo/u);
   assert.match(result.stderr, /Usage: release-note-weaver/u);
+});
+
+test('cli rejects invalid repository paths without generating a release note', () => {
+  const cwd = new URL('..', import.meta.url);
+
+  for (const [repoPath, diagnostic] of [
+    ['fixtures/does-not-exist', /Repository path does not exist:/u],
+    ['package.json', /Repository path is not a directory:/u]
+  ]) {
+    const result = spawnSync('node', ['bin/release-note-weaver.js', repoPath, '--no-git'], {
+      cwd,
+      encoding: 'utf8'
+    });
+
+    assert.equal(result.status, 2);
+    assert.equal(result.stdout, '');
+    assert.match(result.stderr, diagnostic);
+    assert.match(result.stderr, /Usage: release-note-weaver/u);
+    assert.doesNotMatch(result.stderr, /Release Candidate Note/u);
+  }
 });
 
 test('cli accepts supported flags before or after the repository operand', () => {
