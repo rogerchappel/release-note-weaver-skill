@@ -39,7 +39,12 @@ are present.
 - `docs/TASKS.md` checked tasks become evidence-backed changes.
 - `docs/TASKS.md` unchecked tasks become follow-up.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
-- Recent git commits are included unless `--no-git` is supplied.
+- Recent Git commits are included unless `--no-git` is supplied. Git evidence is read only
+  when the repository operand resolves to the Git worktree root itself. A plain directory
+  nested inside another checkout is not treated as that checkout, and subdirectory operands
+  are not supported. If the operand is not a Git worktree root, the note contains a
+  `Git evidence unavailable` warning and the CLI exits `1`. Paths containing spaces are
+  supported. Use `--no-git` to intentionally skip this check and retain file-only behavior.
 
 ## Safety
 
