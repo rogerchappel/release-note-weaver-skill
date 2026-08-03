@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 import { collectEvidence, weaveReleaseNote } from '../lib/weaver.js';
 
@@ -109,4 +112,63 @@ test('cli accepts supported flags before or after the repository operand', () =>
 
   assert.equal(before, after);
   assert.match(before, /Release Candidate Note/u);
+});
+
+function makeGitRepository(prefix = 'release-note-weaver-') {
+  const repoPath = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  fs.mkdirSync(path.join(repoPath, 'docs'));
+  fs.writeFileSync(path.join(repoPath, 'docs/TASKS.md'), '- [x] Test Git evidence\n');
+  fs.writeFileSync(path.join(repoPath, 'docs/VERIFY.md'), 'npm test\n');
+  execFileSync('git', ['init', '-q', repoPath]);
+  execFileSync('git', ['-C', repoPath, 'config', 'user.name', 'Test User']);
+  execFileSync('git', ['-C', repoPath, 'config', 'user.email', 'test@example.com']);
+  execFileSync('git', ['-C', repoPath, 'add', '.']);
+  execFileSync('git', ['-C', repoPath, 'commit', '-qm', 'repository evidence']);
+  return repoPath;
+}
+
+test('collects Git commits only when the operand is the worktree root', (t) => {
+  const repoPath = makeGitRepository('release note weaver root ');
+  t.after(() => fs.rmSync(repoPath, { recursive: true, force: true }));
+
+  const evidence = collectEvidence(repoPath);
+  assert.equal(evidence.gitEvidenceAvailable, true);
+  assert.match(evidence.commits[0], /repository evidence/u);
+});
+
+test('does not inherit Git commits for an unrelated nested directory', (t) => {
+  const repoPath = makeGitRepository();
+  const nestedPath = path.join(repoPath, 'unrelated target');
+  fs.mkdirSync(path.join(nestedPath, 'docs'), { recursive: true });
+  fs.writeFileSync(path.join(nestedPath, 'docs/TASKS.md'), '- [x] Nested task\n');
+  fs.writeFileSync(path.join(nestedPath, 'docs/VERIFY.md'), 'npm test\n');
+  t.after(() => fs.rmSync(repoPath, { recursive: true, force: true }));
+
+  const result = weaveReleaseNote(nestedPath);
+  assert.deepEqual(result.evidence.commits, []);
+  assert.ok(result.warnings.includes(
+    'Git evidence unavailable: repository operand must be a Git worktree root.'
+  ));
+});
+
+test('warns and exits nonzero when Git evidence is requested for a non-Git directory', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver non git '));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const cwd = new URL('..', import.meta.url);
+  const result = spawnSync('node', ['bin/release-note-weaver.js', directory], {
+    cwd,
+    encoding: 'utf8'
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /Git evidence unavailable: repository operand must be a Git worktree root\./u);
+});
+
+test('--no-git remains valid for a non-Git directory with spaces', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver no git '));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const result = weaveReleaseNote(directory, { includeGit: false });
+  assert.equal(result.evidence.gitEvidenceAvailable, false);
+  assert.doesNotMatch(result.markdown, /Git evidence unavailable/u);
 });
