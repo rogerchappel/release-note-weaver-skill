@@ -18,6 +18,30 @@ test('collects completed tasks and verification lines', () => {
   ]);
 });
 
+test('collects Markdown-formatted verification commands without result annotations', () => {
+  const evidence = collectEvidence('fixtures/verification-syntax', { includeGit: false });
+  assert.deepEqual(evidence.verification, [
+    'npm test',
+    'node bin/release-note-weaver.js . --no-git',
+    'npm run check',
+    'node --version'
+  ]);
+});
+
+test('cli renders Markdown-formatted verification commands without a missing-evidence warning', () => {
+  const cwd = new URL('..', import.meta.url);
+  const output = execFileSync(
+    'node',
+    ['bin/release-note-weaver.js', 'fixtures/verification-syntax', '--no-git'],
+    { cwd, encoding: 'utf8' }
+  );
+
+  assert.match(output, /- npm test\n/u);
+  assert.match(output, /- node bin\/release-note-weaver\.js \. --no-git\n/u);
+  assert.doesNotMatch(output, /passed, 13 tests/u);
+  assert.doesNotMatch(output, /Missing verification command evidence/u);
+});
+
 test('separates open tasks from completed changes', () => {
   const evidence = collectEvidence('fixtures/sample-repo', { includeGit: false });
   assert.deepEqual(evidence.openTasks, ['Add hosted docs']);

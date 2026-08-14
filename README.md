@@ -39,6 +39,8 @@ are present.
 - `docs/TASKS.md` checked tasks become evidence-backed changes.
 - `docs/TASKS.md` unchecked tasks become follow-up.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
+  Commands may be plain lines, Markdown list entries, fenced lines, or inline code followed by
+  a prose result annotation; inline-code annotations are omitted from the extracted command.
 - Recent Git commits are included unless `--no-git` is supplied. Git evidence is read only
   when the repository operand resolves to the Git worktree root itself. A plain directory
   nested inside another checkout is not treated as that checkout, and subdirectory operands
@@ -55,7 +57,8 @@ are present.
 ## Limitations
 
 - Task parsing expects Markdown checklist syntax.
-- Verification parsing only recognizes common command prefixes.
+- Verification parsing only recognizes common command prefixes (`npm`, `node`, `bash`, `pnpm`,
+  `yarn`, `python`, `pytest`, `go test`, and `cargo test`).
 - Generated text is a draft and should be reviewed before use in a public PR.
 
 ## Verify
