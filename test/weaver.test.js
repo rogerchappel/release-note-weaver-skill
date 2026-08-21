@@ -23,6 +23,10 @@ test('collects Markdown-formatted verification commands without result annotatio
   assert.deepEqual(evidence.verification, [
     'npm test',
     'node bin/release-note-weaver.js . --no-git',
+    'make test',
+    'deno test',
+    './scripts/verify.sh',
+    'make check',
     'npm run check',
     'node --version'
   ]);
@@ -39,6 +43,11 @@ test('cli renders Markdown-formatted verification commands without a missing-evi
   assert.match(output, /- npm test\n/u);
   assert.match(output, /- node bin\/release-note-weaver\.js \. --no-git\n/u);
   assert.doesNotMatch(output, /passed, 13 tests/u);
+  assert.match(output, /- make test\n/u);
+  assert.match(output, /- deno test\n/u);
+  assert.match(output, /- \.\/scripts\/verify\.sh\n/u);
+  assert.doesNotMatch(output, /Run deno test/u);
+  assert.doesNotMatch(output, /Result: make test/u);
   assert.doesNotMatch(output, /Missing verification command evidence/u);
 });
 
