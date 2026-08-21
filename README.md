@@ -41,6 +41,9 @@ are present.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
   Commands may be plain lines, Markdown list entries, fenced lines, or inline code followed by
   a prose result annotation; inline-code annotations are omitted from the extracted command.
+  Supported command prefixes include Node package runners, Python, Go, Cargo, Deno, Bun,
+  `make`, `just`, common JVM/.NET test runners, and relative executable paths such as
+  `./scripts/verify.sh`. Narrative sentences and result labels are not command evidence.
 - Recent Git commits are included unless `--no-git` is supplied. Git evidence is read only
   when the repository operand resolves to the Git worktree root itself. A plain directory
   nested inside another checkout is not treated as that checkout, and subdirectory operands
@@ -57,8 +60,8 @@ are present.
 ## Limitations
 
 - Task parsing expects Markdown checklist syntax.
-- Verification parsing only recognizes common command prefixes (`npm`, `node`, `bash`, `pnpm`,
-  `yarn`, `python`, `pytest`, `go test`, and `cargo test`).
+- Verification parsing recognizes the documented common command prefixes and relative executable
+  paths; other command forms must be recorded using a supported runner.
 - Generated text is a draft and should be reviewed before use in a public PR.
 
 ## Verify

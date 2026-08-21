@@ -9,6 +9,9 @@ Use this skill when an agent has completed local repo work and needs evidence-ba
 - A local repository path.
 - `docs/TASKS.md` with completed and open checklist items.
 - Optional `docs/VERIFY.md` or `docs/RELEASE_CANDIDATE.md` with exact verification commands.
+  Commands may be plain, bulleted, fenced, or inline-code entries. Supported prefixes include
+  Node package runners, Python, Go, Cargo, Deno, Bun, `make`, `just`, JVM/.NET test runners,
+  and relative executables such as `./scripts/verify.sh`; narrative/result lines are ignored.
 - Optional git history.
 
 ## Side-Effect Boundaries
