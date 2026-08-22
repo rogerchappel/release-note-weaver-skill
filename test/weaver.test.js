@@ -27,6 +27,9 @@ test('collects Markdown-formatted verification commands without result annotatio
     'deno test',
     './scripts/verify.sh',
     'make check',
+    'python3 -m pytest',
+    'npx eslint .',
+    'uv run pytest',
     'npm run check',
     'node --version'
   ]);
@@ -46,8 +49,14 @@ test('cli renders Markdown-formatted verification commands without a missing-evi
   assert.match(output, /- make test\n/u);
   assert.match(output, /- deno test\n/u);
   assert.match(output, /- \.\/scripts\/verify\.sh\n/u);
+  assert.match(output, /- python3 -m pytest\n/u);
+  assert.match(output, /- npx eslint \.\n/u);
+  assert.match(output, /- uv run pytest\n/u);
   assert.doesNotMatch(output, /Run deno test/u);
   assert.doesNotMatch(output, /Result: make test/u);
+  assert.doesNotMatch(output, /Run python3 -m pytest/u);
+  assert.doesNotMatch(output, /Use npx eslint/u);
+  assert.doesNotMatch(output, /The uv run pytest command/u);
   assert.doesNotMatch(output, /Missing verification command evidence/u);
 });
 
