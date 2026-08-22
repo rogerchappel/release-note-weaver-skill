@@ -41,7 +41,8 @@ are present.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
   Commands may be plain lines, Markdown list entries, fenced lines, or inline code followed by
   a prose result annotation; inline-code annotations are omitted from the extracted command.
-  Supported command prefixes include Node package runners, Python, Go, Cargo, Deno, Bun,
+  Supported command prefixes include Node package runners (`npm`, `npx`, `pnpm`, and `yarn`),
+  Python runners (`python`, `python3`, `pytest`, and `uv`), Go, Cargo, Deno, Bun,
   `make`, `just`, common JVM/.NET test runners, and relative executable paths such as
   `./scripts/verify.sh`. Narrative sentences and result labels are not command evidence.
 - Recent Git commits are included unless `--no-git` is supplied. Git evidence is read only
