@@ -39,8 +39,9 @@ are present.
 - `docs/TASKS.md` checked tasks become evidence-backed changes.
 - `docs/TASKS.md` unchecked tasks become follow-up.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
-  Commands may be plain lines, Markdown list entries, fenced lines, or inline code followed by
-  a prose result annotation; inline-code annotations are omitted from the extracted command.
+  Commands may be plain lines, Markdown list entries using `-`, `*`, `+`, `1.`, or `1)`,
+  fenced lines, or inline code followed by a prose result annotation; inline-code annotations
+  are omitted from the extracted command.
   Supported command prefixes include Node package runners (`npm`, `npx`, `pnpm`, and `yarn`),
   Python runners (`python`, `python3`, `pytest`, and `uv`), Go, Cargo, Deno, Bun,
   `make`, `just`, common JVM/.NET test runners, and relative executable paths such as
