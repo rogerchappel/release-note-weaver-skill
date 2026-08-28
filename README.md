@@ -36,8 +36,8 @@ are present.
 
 ## Evidence Sources
 
-- `docs/TASKS.md` checked tasks become evidence-backed changes.
-- `docs/TASKS.md` unchecked tasks become follow-up.
+- `docs/TASKS.md` checked tasks become evidence-backed changes, and unchecked tasks become
+  follow-up. Task-list entries may use `-`, `*`, `+`, `1.`, or `1)` Markdown list prefixes.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
   Commands may be plain lines, Markdown list entries using `-`, `*`, `+`, `1.`, or `1)`,
   fenced lines, or inline code followed by a prose result annotation; inline-code annotations
@@ -61,7 +61,7 @@ are present.
 
 ## Limitations
 
-- Task parsing expects Markdown checklist syntax.
+- Task parsing expects Markdown checklist syntax with a documented supported list prefix.
 - Verification parsing recognizes the documented common command prefixes and relative executable
   paths; other command forms must be recorded using a supported runner.
 - Generated text is a draft and should be reviewed before use in a public PR.

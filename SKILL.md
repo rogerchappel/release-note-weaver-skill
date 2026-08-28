@@ -7,7 +7,8 @@ Use this skill when an agent has completed local repo work and needs evidence-ba
 ## Inputs
 
 - A local repository path.
-- `docs/TASKS.md` with completed and open checklist items.
+- `docs/TASKS.md` with completed and open checklist items using `-`, `*`, `+`, `1.`, or `1)`
+  Markdown list prefixes.
 - Optional `docs/VERIFY.md` or `docs/RELEASE_CANDIDATE.md` with exact verification commands.
   Commands may be plain, bulleted, fenced, or inline-code entries. Supported prefixes include
   Node package runners, Python, Go, Cargo, Deno, Bun, `make`, `just`, JVM/.NET test runners,
