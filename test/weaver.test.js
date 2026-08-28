@@ -73,6 +73,52 @@ test('separates open tasks from completed changes', () => {
   assert.deepEqual(evidence.openTasks, ['Add hosted docs']);
 });
 
+test('collects completed and open tasks from every supported Markdown list marker', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver task markers '));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.writeFileSync(path.join(directory, 'docs/TASKS.md'), [
+    '- [x] Hyphen complete',
+    '* [x] Asterisk complete',
+    '+ [X] Plus complete',
+    '1. [x] Dot-ordered complete',
+    '2) [x] Parenthesis-ordered complete',
+    '- [ ] Hyphen open',
+    '* [ ] Asterisk open',
+    '+ [ ] Plus open',
+    '3. [ ] Dot-ordered open',
+    '4) [ ] Parenthesis-ordered open'
+  ].join('\n'));
+  fs.writeFileSync(path.join(directory, 'docs/VERIFY.md'), 'npm test\n');
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const evidence = collectEvidence(directory, { includeGit: false });
+  assert.deepEqual(evidence.completedTasks, [
+    'Hyphen complete',
+    'Asterisk complete',
+    'Plus complete',
+    'Dot-ordered complete',
+    'Parenthesis-ordered complete'
+  ]);
+  assert.deepEqual(evidence.openTasks, [
+    'Hyphen open',
+    'Asterisk open',
+    'Plus open',
+    'Dot-ordered open',
+    'Parenthesis-ordered open'
+  ]);
+
+  const cwd = new URL('..', import.meta.url);
+  const result = spawnSync('node', ['bin/release-note-weaver.js', directory, '--no-git'], {
+    cwd,
+    encoding: 'utf8'
+  });
+  assert.equal(result.status, 0);
+  assert.doesNotMatch(result.stdout, /Missing completed task evidence/u);
+  for (const task of [...evidence.completedTasks, ...evidence.openTasks]) {
+    assert.match(result.stdout, new RegExp(`- ${task}`));
+  }
+});
+
 test('renders warnings when evidence is missing', () => {
   const result = weaveReleaseNote('fixtures/empty-repo', { includeGit: false });
   assert.ok(result.warnings.includes('Missing completed task evidence in docs/TASKS.md.'));
