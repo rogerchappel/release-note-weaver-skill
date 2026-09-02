@@ -65,7 +65,32 @@ test('cli renders Markdown-formatted verification commands without a missing-evi
   assert.doesNotMatch(output, /Use npx eslint/u);
   assert.doesNotMatch(output, /The uv run pytest command/u);
   assert.doesNotMatch(output, /Run npm test before publishing/u);
+  assert.doesNotMatch(output, /npm test should be run before publishing/u);
   assert.doesNotMatch(output, /Missing verification command evidence/u);
+});
+
+test('rejects runner-prefixed prose as missing verification evidence', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver prose '));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.writeFileSync(path.join(directory, 'docs/TASKS.md'), '- [x] Prepare release\n');
+  fs.writeFileSync(path.join(directory, 'docs/VERIFY.md'), [
+    'npm test should be run before publishing.',
+    '- npm test should be run before publishing.',
+    '`npm test should be run before publishing.`',
+    '```text',
+    'npm test should be run before publishing.',
+    '```'
+  ].join('\n'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const result = spawnSync('node', ['bin/release-note-weaver.js', directory, '--no-git'], {
+    cwd: new URL('..', import.meta.url),
+    encoding: 'utf8'
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /Missing verification command evidence/u);
+  assert.doesNotMatch(result.stdout, /- npm test should be run before publishing/u);
 });
 
 test('separates open tasks from completed changes', () => {

@@ -21,3 +21,10 @@ Run python3 -m pytest before publishing.
 Use npx eslint . to check the project.
 The uv run pytest command passed.
 1. Run npm test before publishing.
+npm test should be run before publishing.
+- npm test should be run before publishing.
+`npm test should be run before publishing.`
+
+```text
+npm test should be run before publishing.
+```
