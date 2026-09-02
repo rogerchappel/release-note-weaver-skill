@@ -45,7 +45,8 @@ are present.
   Supported command prefixes include Node package runners (`npm`, `npx`, `pnpm`, and `yarn`),
   Python runners (`python`, `python3`, `pytest`, and `uv`), Go, Cargo, Deno, Bun,
   `make`, `just`, common JVM/.NET test runners, and relative executable paths such as
-  `./scripts/verify.sh`. Narrative sentences and result labels are not command evidence.
+  `./scripts/verify.sh`. Narrative sentences and result labels are not command evidence, including
+  prose sentences that begin with a runner name (for example, `npm test should be run.`).
 - Recent Git commits are included unless `--no-git` is supplied. Git evidence is read only
   when the repository operand resolves to the Git worktree root itself. A plain directory
   nested inside another checkout is not treated as that checkout, and subdirectory operands
