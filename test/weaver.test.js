@@ -18,6 +18,33 @@ test('collects completed tasks and verification lines', () => {
   ]);
 });
 
+test('deduplicates normalized verification commands across evidence sources', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver duplicate verification '));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.writeFileSync(path.join(directory, 'docs/VERIFY.md'), [
+    '- `npm test`',
+    '- npm run check'
+  ].join('\n'));
+  fs.writeFileSync(path.join(directory, 'docs/RELEASE_CANDIDATE.md'), [
+    '1. npm test',
+    '2. npm run smoke',
+    '3. `npm run check`'
+  ].join('\n'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const evidence = collectEvidence(directory, { includeGit: false });
+  assert.deepEqual(evidence.verification, [
+    'npm test',
+    'npm run check',
+    'npm run smoke'
+  ]);
+
+  const result = weaveReleaseNote(directory, { includeGit: false });
+  assert.equal(result.markdown.match(/^- npm test$/gmu)?.length, 1);
+  assert.equal(result.markdown.match(/^- npm run check$/gmu)?.length, 1);
+  assert.equal(result.markdown.match(/^- npm run smoke$/gmu)?.length, 1);
+});
+
 test('collects Markdown-formatted verification commands without result annotations', () => {
   const evidence = collectEvidence('fixtures/verification-syntax', { includeGit: false });
   assert.deepEqual(evidence.verification, [
