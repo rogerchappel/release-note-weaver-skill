@@ -39,6 +39,7 @@ are present.
 - `docs/TASKS.md` checked tasks become evidence-backed changes, and unchecked tasks become
   follow-up. Task-list entries may use `-`, `*`, `+`, `1.`, or `1)` Markdown list prefixes.
 - `docs/VERIFY.md` and `docs/RELEASE_CANDIDATE.md` command lines become verification evidence.
+  A normalized command present in both files is listed once, at its first occurrence.
   Commands may be plain lines, Markdown list entries using `-`, `*`, `+`, `1.`, or `1)`,
   fenced lines, or inline code followed by a prose result annotation; inline-code annotations
   are omitted from the extracted command.
