@@ -40,3 +40,7 @@ The command exits `0` when no missing-evidence warnings are produced and `1` whe
 - Task parsing expects Markdown checklist syntax.
 - Verification parsing only recognizes common command prefixes.
 - Generated text is a draft and should be reviewed before use in a public PR.
+
+
+<!-- Automated change by spark worker -->
+This change was automatically processed by oss-pipeline-worker-spark-a
