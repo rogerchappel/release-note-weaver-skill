@@ -120,6 +120,21 @@ test('rejects runner-prefixed prose as missing verification evidence', (t) => {
   assert.doesNotMatch(result.stdout, /- npm test should be run before publishing/u);
 });
 
+test('rejects sentence-like command-looking prose while retaining commands', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver sentence prose '));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.writeFileSync(path.join(directory, 'docs/VERIFY.md'), [
+    'npm test was successful.',
+    'npm test is required.',
+    'npm test',
+    '- `npm run check`'
+  ].join('\n'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const evidence = collectEvidence(directory, { includeGit: false });
+  assert.deepEqual(evidence.verification, ['npm test', 'npm run check']);
+});
+
 test('separates open tasks from completed changes', () => {
   const evidence = collectEvidence('fixtures/sample-repo', { includeGit: false });
   assert.deepEqual(evidence.openTasks, ['Add hosted docs']);
