@@ -15,6 +15,13 @@ npm run release:check
 node bin/release-note-weaver.js . --no-git
 ```
 
+## Release readiness
+
+`npm run release:check` is the sole release-readiness gate. It validates package
+metadata, runs the test suite and CLI smoke check, and verifies the packed package
+can be installed and invoked. CI runs this same command; there is deliberately no
+separate `release:readiness` alias that could diverge from the enforced checks.
+
 ## CLI
 
 ```bash
