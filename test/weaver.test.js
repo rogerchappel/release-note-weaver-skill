@@ -335,3 +335,18 @@ test('--no-git remains valid for a non-Git directory with spaces', (t) => {
   assert.equal(result.evidence.gitEvidenceAvailable, false);
   assert.doesNotMatch(result.markdown, /Git evidence unavailable/u);
 });
+
+test('custom section titles render while defaults remain stable', () => {
+  const defaults = weaveReleaseNote('fixtures/sample-repo', { includeGit: false });
+  assert.match(defaults.markdown, /^## Evidence-Backed Changes$/mu);
+  assert.match(defaults.markdown, /^## Verification$/mu);
+  const customized = weaveReleaseNote('fixtures/sample-repo', {
+    includeGit: false,
+    sectionTitles: { changes: 'Delivered', verification: 'Checks', followUp: 'Next steps' }
+  });
+  assert.match(customized.markdown, /^## Delivered$/mu);
+  assert.match(customized.markdown, /^## Checks$/mu);
+  assert.match(customized.markdown, /^## Next steps$/mu);
+  assert.match(customized.markdown, /^## Recent Commits$/mu);
+  assert.match(customized.markdown, /^## Warnings$/mu);
+});

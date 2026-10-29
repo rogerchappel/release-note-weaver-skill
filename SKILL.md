@@ -15,6 +15,16 @@ Use this skill when an agent has completed local repo work and needs evidence-ba
   and relative executables such as `./scripts/verify.sh`; narrative/result lines are ignored.
 - Optional git history.
 
+## Section Titles
+
+Library callers may pass `sectionTitles` in the options object to `weaveReleaseNote`.
+Use `changes`, `verification`, `commits`, `followUp`, and `warnings` to override
+individual Markdown headings; omitted keys retain the defaults. For example:
+
+```js
+weaveReleaseNote('.', { sectionTitles: { changes: 'Delivered', followUp: 'Next steps' } });
+```
+
 ## Side-Effect Boundaries
 
 This skill only reads local files and prints Markdown. It must not create GitHub PRs, push branches, publish packages, tag releases, or edit release notes in place.
