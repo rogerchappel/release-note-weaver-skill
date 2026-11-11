@@ -62,6 +62,10 @@ are present.
   `Git evidence unavailable` warning and the CLI exits `1`. Paths containing spaces are
   supported. Use `--no-git` to intentionally skip this check and retain file-only behavior.
 
+## Custom section titles
+
+The library API accepts `sectionTitles` overrides for the `changes`, `verification`, `commits`, `followUp`, and `warnings` headings. Unspecified headings keep their defaults. See [the section titles guide](docs/SECTION_TITLES.md) for the complete key/default table and an example.
+
 ## Safety
 
 - Local reads only.
