@@ -8,4 +8,4 @@
 - [x] Add CLI and package scripts.
 - [x] Add fixture-backed tests.
 - [x] Document skill safety boundaries.
-- [ ] Add configurable section titles.
+- [x] Add configurable section titles (implemented via `options.sectionTitles`; see [Section titles](SECTION_TITLES.md)).
