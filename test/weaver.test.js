@@ -120,6 +120,22 @@ test('rejects runner-prefixed prose as missing verification evidence', (t) => {
   assert.doesNotMatch(result.stdout, /- npm test should be run before publishing/u);
 });
 
+test('rejects punctuation-delimited prose after a command prefix while retaining standalone commands', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver punctuation prose '));
+  fs.mkdirSync(path.join(directory, 'docs'));
+  fs.writeFileSync(path.join(directory, 'docs/VERIFY.md'), [
+    'npm test: this validates the release.',
+    'npm run check - this confirms package health.',
+    'npm test; it should run before publishing.',
+    'npm test',
+    '`npm run check`'
+  ].join('\n'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+
+  const evidence = collectEvidence(directory, { includeGit: false });
+  assert.deepEqual(evidence.verification, ['npm test', 'npm run check']);
+});
+
 test('rejects sentence-like command-looking prose while retaining commands', (t) => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver sentence prose '));
   fs.mkdirSync(path.join(directory, 'docs'));
