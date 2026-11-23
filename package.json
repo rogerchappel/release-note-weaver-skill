@@ -7,7 +7,7 @@
     "release-note-weaver": "bin/release-note-weaver.js"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test test/*.test.js",
     "check": "node scripts/check-package.js",
     "smoke": "node bin/release-note-weaver.js fixtures/sample-repo --no-git",
     "package:smoke": "node scripts/package-smoke.js",

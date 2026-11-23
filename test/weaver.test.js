@@ -370,3 +370,22 @@ test('custom section titles render while default headings remain unchanged', () 
   assert.match(customized.markdown, /^## Recent Commits$/mu);
   assert.match(customized.markdown, /^## Warnings$/mu);
 });
+
+test('npm test discovers every intended test file', () => {
+  if (process.env.NODE_TEST_CONTEXT) return;
+
+  const testFiles = fs.readdirSync(new URL('.', import.meta.url))
+    .filter((file) => file.endsWith('.test.js'))
+    .sort();
+  const result = spawnSync(process.execPath, ['--test', ...testFiles.map((file) => `test/${file}`)], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+  });
+  const output = `${result.stdout}\n${result.stderr}`;
+  assert.equal(result.status, 0, output);
+
+  const discovered = [...output.matchAll(/^ℹ tests (\d+)$/gmu)]
+    .map(([, count]) => Number(count))
+    .at(-1);
+  assert.ok(discovered > 0, output);
+});
