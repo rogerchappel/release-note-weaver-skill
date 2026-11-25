@@ -315,6 +315,31 @@ test('collects Git commits only when the operand is the worktree root', (t) => {
   assert.match(evidence.commits[0], /repository evidence/u);
 });
 
+test('treats timed-out Git evidence as unavailable', (t) => {
+  const repoPath = makeGitRepository('release note weaver timeout ');
+  const wrapperDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'release note weaver git wrapper '));
+  const gitPath = path.join(wrapperDirectory, 'git');
+  fs.writeFileSync(gitPath, '#!/bin/sh\nsleep 5\n');
+  fs.chmodSync(gitPath, 0o755);
+  t.after(() => {
+    fs.rmSync(repoPath, { recursive: true, force: true });
+    fs.rmSync(wrapperDirectory, { recursive: true, force: true });
+  });
+
+  const started = Date.now();
+  const result = spawnSync('node', ['--input-type=module', '-e', `import { collectEvidence } from ${JSON.stringify(new URL('../lib/weaver.js', import.meta.url).href)}; const result = collectEvidence(${JSON.stringify(repoPath)}); console.log(JSON.stringify(result));`], {
+    cwd: new URL('..', import.meta.url),
+    encoding: 'utf8',
+    timeout: 8000,
+    env: { ...process.env, PATH: `${wrapperDirectory}:${process.env.PATH}` }
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(Date.now() - started < 7000);
+  const evidence = JSON.parse(result.stdout);
+  assert.equal(evidence.gitEvidenceAvailable, false);
+  assert.deepEqual(evidence.commits, []);
+});
+
 test('does not inherit Git commits for an unrelated nested directory', (t) => {
   const repoPath = makeGitRepository();
   const nestedPath = path.join(repoPath, 'unrelated target');
